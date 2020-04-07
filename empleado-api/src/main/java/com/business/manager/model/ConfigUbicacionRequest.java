@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ConfigUbicacionRequest implements BaseModel{
+public class ConfigUbicacionRequest{
 	private Long idUbicacion;
 	private Long ingenieroACargo;
 	private Long oficialACargo;

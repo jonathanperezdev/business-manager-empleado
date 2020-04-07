@@ -1,12 +1,15 @@
 package com.business.manager.dao.repositories;
 
 import com.business.manager.dao.entities.Empleado;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface EmpleadoRepository /*extends JpaRepository<Empleado, Long>*/{
+@Repository
+public interface EmpleadoRepository extends JpaRepository<Empleado, Long>{
 	
-	/*List<Empleado> findByNombresContainingAndApellidosContaining(String nombres, String apellidos);
+	List<Empleado> findByNombresContainingAndApellidosContaining(String nombres, String apellidos);
 	List<Empleado> findByCargoOrderByCargo(Long cargo);
 	List<Empleado> findByUbicacion(Long ubicacion);
 	List<Empleado> findByUbicacionOrderByCargoAscNombresAsc(Long ubicacion);
@@ -21,6 +24,6 @@ public interface EmpleadoRepository /*extends JpaRepository<Empleado, Long>*/{
             Long ubicacion,
             List<Long> idCargos,
             String nombres,
-            String apellidos);*/
+            String apellidos);
 	
 }
