@@ -1,0 +1,37 @@
+version: '3'
+services:
+  BM_DB_EMPLEADO:
+    image: postgres:11
+    networks:
+      - BM_EMPLEADO_NETWORK
+    volumes:
+      - business-manager-data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    restart: unless-stopped
+  BM_EMPLEADO:
+    image: business-manager-empleado-server:1.0-SNAPSHOT
+    networks:
+      - BM_EMPLEADO_NETWORK
+    environment:
+      - JAVA_OPTS=
+        -agentlib:jdwp=transport=dt_socket,address=5081,server=y,suspend=n
+    restart: on-failure
+    expose:
+      - 8080
+      - 5081
+    ports:
+      - 8080:8080
+      - 5081:5081
+    depends_on:
+      - BM_DB_EMPLEADO
+volumes:
+  business-manager-data:
+networks:
+  BM_EMPLEADO_NETWORK:

@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.math.BigInteger;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -26,7 +28,7 @@ public class Empleado implements BaseEntity {
     private String apellidos;
     
     @NonNull
-    private Long salario;
+    private BigInteger salario;
     
     private String direccion;
     private String numeroCelular;

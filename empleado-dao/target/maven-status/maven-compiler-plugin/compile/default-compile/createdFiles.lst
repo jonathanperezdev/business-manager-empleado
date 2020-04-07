@@ -1,8 +1,0 @@
-com/business/manager/dao/repositories/CargoRepository.class
-com/business/manager/dao/entities/Empleado.class
-com/business/manager/dao/repositories/EmpleadoRepository.class
-com/business/manager/dao/repositories/UbicacionRepository.class
-com/business/manager/dao/entities/BaseEntity.class
-com/business/manager/dao/entities/Ubicacion$UbicacionType.class
-com/business/manager/dao/entities/Ubicacion.class
-com/business/manager/dao/entities/Cargo.class
