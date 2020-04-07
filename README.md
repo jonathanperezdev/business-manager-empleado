@@ -1,2 +1,2 @@
-# business-manager-empleado
-#Repositorio para crear empleados ByC
+#business-manager-empleado
+Repositorio que permite la creacion de un empleado
