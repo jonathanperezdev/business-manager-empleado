@@ -6,10 +6,10 @@ import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
-public class UbicacionModel implements BaseModel{
+public class UbicacionModel {
 
 	@NonNull
-	private Long id;
+	private Integer id;
 	
 	@NonNull
 	private String nombre;

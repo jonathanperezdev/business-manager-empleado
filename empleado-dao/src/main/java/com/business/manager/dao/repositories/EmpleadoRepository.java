@@ -10,19 +10,19 @@ import java.util.List;
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long>{
 	
 	List<Empleado> findByNombresContainingAndApellidosContaining(String nombres, String apellidos);
-	List<Empleado> findByCargoOrderByCargo(Long cargo);
-	List<Empleado> findByUbicacion(Long ubicacion);
-	List<Empleado> findByUbicacionOrderByCargoAscNombresAsc(Long ubicacion);
+	List<Empleado> findByCargoOrderByCargo(Integer cargo);
+	List<Empleado> findByUbicacion(Integer ubicacion);
+	List<Empleado> findByUbicacionOrderByCargoAscNombresAsc(Integer ubicacion);
 	
 	List<Empleado> findByUbicacionAndCargoInAndNombresContainingAndApellidosContainingOrderByCargoAscNombresAsc(
             Long ubicacion,
-            List<Long> idCargos,
+            List<Integer> idCargos,
             String nombres,
             String apellidos);
 	
 	List<Empleado> findByUbicacionAndCargoNotInAndNombresContainingAndApellidosContainingOrderByCargoAscNombresAsc(
             Long ubicacion,
-            List<Long> idCargos,
+            List<Integer> idCargos,
             String nombres,
             String apellidos);
 	

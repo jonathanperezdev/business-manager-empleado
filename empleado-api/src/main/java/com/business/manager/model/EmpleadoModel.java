@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
-public class EmpleadoModel implements BaseModel{
+public class EmpleadoModel {
 	
 	@NonNull
     private Long id;
@@ -18,7 +20,7 @@ public class EmpleadoModel implements BaseModel{
     private String apellidos;
     
     @NonNull
-    private Long salario;
+    private BigDecimal salario;
     
     private String direccion;
     private String numeroCelular;
@@ -28,8 +30,8 @@ public class EmpleadoModel implements BaseModel{
     private String contactoEmergenciaApellidos;
     private String contactoEmergenciaTelefono;
     
-    private Long cargo;
-    private Long idUbicacion;
+    private Integer cargo;
+    private Integer idUbicacion;
     
     private UbicacionModel ubicacion;
 

@@ -6,9 +6,9 @@ import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
-public class CargoModel implements BaseModel{
+public class CargoModel{
 	@NonNull
-    private Long id;
+    private Integer id;
 	
 	@NonNull
 	private String nombre;

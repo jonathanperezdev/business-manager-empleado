@@ -1,12 +1,19 @@
 CREATE TABLE CARGO(
-	id bigserial primary key,
-	nombre VARCHAR(30) not null,
+	id serial primary key,
+	nombre VARCHAR(30) not null UNIQUE,
 	descripcion VARCHAR(300),
 	funciones VARCHAR(300)
 );
 
+CREATE TABLE TIPO_DOCUMENTO (
+  id serial primary key,
+  nombre VARCHAR(40) UNIQUE
+);
+
 CREATE TABLE EMPLEADO (
   id bigserial primary key,
+  tipo_documento INT NOT NULL,
+  numero_documento VARCHAR(15) NOT NULL UNIQUE,
   nombres varchar(30) NOT NULL,
   apellidos varchar(30) NOT NULL,
   salario numeric(8) NOT NULL,
@@ -16,14 +23,15 @@ CREATE TABLE EMPLEADO (
   contacto_emergencia_nombres varchar(30),
   contacto_emergencia_apellidos varchar(30),
   contacto_emergencia_telefono varchar(13),
-  cargo BIGINT,
-  ubicacion BIGINT,
-  CONSTRAINT EMPLEADO_cargo_CARGO_id FOREIGN KEY (cargo) REFERENCES cargo(id)
+  cargo INT,
+  ubicacion INT,
+  CONSTRAINT EMPLEADO_cargo_CARGO_id FOREIGN KEY (cargo) REFERENCES cargo(id),
+  CONSTRAINT EMPLEADO_tipodoc_TIPO_DOCUMENTO_id FOREIGN KEY (tipo_documento) REFERENCES TIPO_DOCUMENTO(id)
 ) ;
 
 CREATE TABLE UBICACION (
-  id bigserial primary key,
-  nombre varchar(30) NOT NULL,
+  id serial primary key,
+  nombre varchar(30) NOT NULL UNIQUE,
   direccion varchar(70) NOT NULL,
   tipo varchar(15) NOT NULL,
   descripcion varchar(300),

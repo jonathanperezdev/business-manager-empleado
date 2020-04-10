@@ -14,10 +14,10 @@ import lombok.NonNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "CARGO")
-public class Cargo implements BaseEntity{
+public class Cargo{
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 	
 	@NonNull
 	private String nombre;
