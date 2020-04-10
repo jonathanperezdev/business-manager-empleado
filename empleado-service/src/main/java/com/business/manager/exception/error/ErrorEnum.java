@@ -11,6 +11,7 @@ public enum ErrorEnum {
 	
 	//Cargo
 	CARGO_BY_NAME_NOT_FOUND("No existe un cargo con el nombre %s"),
+	CARGOS_NOT_FOUND("No existen cargos"),
 	
 	//Ubicaciones
 	UBICACIONES_NOT_FOUND("No existen ubicaciones")

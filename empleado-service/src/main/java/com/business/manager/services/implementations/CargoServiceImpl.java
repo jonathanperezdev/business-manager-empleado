@@ -10,12 +10,13 @@ import com.business.manager.model.CargoModel;
 import com.business.manager.services.CargoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Objects;
-
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class CargoServiceImpl implements CargoService {
@@ -29,13 +30,42 @@ public class CargoServiceImpl implements CargoService {
 	@Autowired
 	private EmpleadoRepository empleadoRepository;
 
+	private Function<Cargo, CargoModel> toCargoModel = cargo -> modelMapper.map(cargo, CargoModel.class);
+	private Function<CargoModel, Cargo> toCargoEntity = cargo -> modelMapper.map(cargo, Cargo.class);
+
 	@Override
-	public void deleteCargo(Long id) {
+	public List<CargoModel> findAllCargos() {
+		List<CargoModel> listCargosModel = toModel(cargoRepository.findAll());
+		if(CollectionUtils.isEmpty(listCargosModel)) {
+			throw new NoDataFoundException(ErrorEnum.CARGOS_NOT_FOUND);
+		}
+		return listCargosModel;
+	}
+
+	@Override
+	public CargoModel findCargo(Integer id) {
+		return toCargoModel.apply(cargoRepository.findById(id).get());
+	}
+
+	@Override
+	public CargoModel upsertCargo(CargoModel cargoModel) {
+		Cargo cargo = cargoRepository.save(toCargoEntity.apply(cargoModel));
+		return toCargoModel.apply(cargo);
+	}
+
+	@Override
+	public CargoModel updateCargo(Integer id, CargoModel cargoModel) {
+		cargoModel.setId(id);
+		return upsertCargo(cargoModel);
+	}
+
+	@Override
+	public void deleteCargo(Integer id) {
 		if(!CollectionUtils.isEmpty(empleadoRepository.findByCargoOrderByCargo(id))) {
 			throw new OperationNotPosibleException(ErrorEnum.DELETE_EMPLEADO_NOT_POSIBLE, "El cargo");
 		}
 
-		delete(id);
+		cargoRepository.deleteById(id);
 	}
 
 	@Override
@@ -49,18 +79,10 @@ public class CargoServiceImpl implements CargoService {
 		return cargo;
 	}
 
-	@Override
-	public JpaRepository<Cargo, Long> getRepository() {
-		return cargoRepository;
-	}
-
-	@Override
-	public CargoModel toModel(Cargo cargo) {
-		return modelMapper.map(cargo, CargoModel.class);
-	}
-
-	@Override
-	public Cargo toEntity(CargoModel model) {
-		return modelMapper.map(model, Cargo.class);
+	private List<CargoModel> toModel(List<Cargo> cargos) {
+		return cargos
+				.stream()
+				.map(toCargoModel)
+				.collect(Collectors.toList());
 	}
 }

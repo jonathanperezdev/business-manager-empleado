@@ -10,13 +10,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "EMPLEADO")
-public class Empleado implements BaseEntity {
+public class Empleado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +29,7 @@ public class Empleado implements BaseEntity {
     private String apellidos;
     
     @NonNull
-    private BigInteger salario;
+    private BigDecimal salario;
     
     private String direccion;
     private String numeroCelular;
@@ -38,8 +39,8 @@ public class Empleado implements BaseEntity {
     private String contactoEmergenciaApellidos;
     private String contactoEmergenciaTelefono;
     
-    private Long cargo;
-    private Long ubicacion;
+    private Integer cargo;
+    private Integer ubicacion;
         
 }
 

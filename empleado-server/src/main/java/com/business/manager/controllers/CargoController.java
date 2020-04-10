@@ -26,14 +26,14 @@ public class CargoController {
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	List<CargoModel> cargos() {
-		return cargoService.findAll();
+		return cargoService.findAllCargos();
 	}
 
 	@GetMapping("/cargo/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	CargoModel getCargo(@PathVariable Long id) {
-		return cargoService.findById(id);
+	CargoModel getCargo(@PathVariable Integer id) {
+		return cargoService.findCargo(id);
 	}
 
 	@PostMapping("/cargo")
@@ -41,20 +41,20 @@ public class CargoController {
 	@ResponseBody
 	CargoModel createCargo(@Valid @RequestBody CargoModel cargo) throws URISyntaxException {
 		log.info("Request para crear un Cargo: {}", cargo);
-		return cargoService.create(cargo);
+		return cargoService.upsertCargo(cargo);
 	}
 
 	@PutMapping("/cargo/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	CargoModel updateCargo(@PathVariable Long id, @Valid @RequestBody CargoModel cargo) {
+	CargoModel updateCargo(@PathVariable Integer id, @Valid @RequestBody CargoModel cargo) {
 		log.info("Request para actualizar Cargo: {}", cargo);
-		return cargoService.update(id,cargo);
+		return cargoService.updateCargo(id,cargo);
 	}
 
 	@DeleteMapping("/cargo/{id}")
 	@ResponseStatus(HttpStatus.OK)
-	public void deleteCargo(@PathVariable Long id) {
+	public void deleteCargo(@PathVariable Integer id) {
 		log.info("Request para eliminar un cargo: {}", id);
 		cargoService.deleteCargo(id);
 	}

@@ -16,7 +16,7 @@ import lombok.NonNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "UBICACION")
-public class Ubicacion implements BaseEntity {
+public class Ubicacion {
 	
 	public enum UbicacionType{
 		OBRA,
@@ -25,7 +25,7 @@ public class Ubicacion implements BaseEntity {
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 	
 	@NonNull
 	private String nombre;
