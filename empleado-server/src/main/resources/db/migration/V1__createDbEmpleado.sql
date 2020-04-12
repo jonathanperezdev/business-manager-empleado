@@ -5,15 +5,16 @@ CREATE TABLE CARGO(
 	funciones VARCHAR(300)
 );
 
-CREATE TABLE TIPO_DOCUMENTO (
+CREATE TABLE TIPO_DOCUMENTO(
   id serial primary key,
-  nombre VARCHAR(40) UNIQUE
+  nombre VARCHAR(40) NOT NULL UNIQUE,
+  orden smallint NOT NULL
 );
 
 CREATE TABLE EMPLEADO (
   id bigserial primary key,
   tipo_documento INT NOT NULL,
-  numero_documento VARCHAR(15) NOT NULL UNIQUE,
+  numero_documento VARCHAR(15) NOT NULL,
   nombres varchar(30) NOT NULL,
   apellidos varchar(30) NOT NULL,
   salario numeric(8) NOT NULL,
@@ -23,8 +24,9 @@ CREATE TABLE EMPLEADO (
   contacto_emergencia_nombres varchar(30),
   contacto_emergencia_apellidos varchar(30),
   contacto_emergencia_telefono varchar(13),
-  cargo INT,
+  cargo INT NOT NULL,
   ubicacion INT,
+  UNIQUE(tipo_documento, numero_documento),
   CONSTRAINT EMPLEADO_cargo_CARGO_id FOREIGN KEY (cargo) REFERENCES cargo(id),
   CONSTRAINT EMPLEADO_tipodoc_TIPO_DOCUMENTO_id FOREIGN KEY (tipo_documento) REFERENCES TIPO_DOCUMENTO(id)
 ) ;

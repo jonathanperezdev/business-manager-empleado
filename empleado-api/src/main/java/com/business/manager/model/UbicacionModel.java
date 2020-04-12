@@ -26,5 +26,4 @@ public class UbicacionModel {
 	
 	private EmpleadoModel ingeniero;
 	private EmpleadoModel oficial;
-
 }

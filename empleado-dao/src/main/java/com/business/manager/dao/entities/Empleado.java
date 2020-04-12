@@ -21,6 +21,12 @@ public class Empleado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NonNull
+    private Integer tipoDocumento;
+
+    @NonNull
+    private String numeroDocumento;
     
     @NonNull
     private String nombres;

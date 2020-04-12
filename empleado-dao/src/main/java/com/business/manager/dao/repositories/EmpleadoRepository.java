@@ -1,6 +1,7 @@
 package com.business.manager.dao.repositories;
 
 import com.business.manager.dao.entities.Empleado;
+import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +26,9 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Long>{
             List<Integer> idCargos,
             String nombres,
             String apellidos);
+
+	Empleado findByTipoDocumentoAndNumeroDocumento(
+			Integer tipoDocumento,
+			String numeroDocumento);
 	
 }
