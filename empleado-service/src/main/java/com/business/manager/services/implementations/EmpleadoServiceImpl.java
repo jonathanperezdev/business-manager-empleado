@@ -12,6 +12,7 @@ import com.business.manager.dao.entities.Empleado;
 import com.business.manager.dao.entities.Ubicacion;
 import com.business.manager.dao.repositories.CargoRepository;
 import com.business.manager.dao.repositories.EmpleadoRepository;
+import com.business.manager.dao.repositories.TipoDocumentoRepository;
 import com.business.manager.dao.repositories.UbicacionRepository;
 import com.business.manager.enums.CargosEnum;
 import com.business.manager.enums.UbicacionesEnum;
@@ -41,6 +42,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	@Autowired
 	private UbicacionRepository ubicacionRepository;
 
+	@Autowired
+	private TipoDocumentoRepository tipoDocumentoRepository;
+
 	private Function<Empleado, EmpleadoModel> toEmpleadoModel = empleado -> modelMapper.map(empleado, EmpleadoModel.class);
 	private Function<EmpleadoModel, Empleado> toEmpleadoEntity = empleado -> modelMapper.map(empleado, Empleado.class);
 
@@ -59,7 +63,18 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 	@Override
 	public EmpleadoModel upsertEmpleado(EmpleadoModel empleadoModel) {
-		Empleado empleado = empleadoRepository.save(toEmpleadoEntity.apply(empleadoModel));
+		Empleado empleado = empleadoRepository.
+				findByTipoDocumentoAndNumeroDocumento(
+						empleadoModel.getTipoDocumento(),
+						empleadoModel.getNumeroDocumento());
+
+		if(Objects.nonNull(empleado)) {
+			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_DUPLICATE_TIPO_AND_NUMBER_DOC,
+					tipoDocumentoRepository.findById(empleadoModel.getTipoDocumento()).get().getNombre(),
+					empleadoModel.getNumeroDocumento());
+		}
+
+		empleado = empleadoRepository.save(toEmpleadoEntity.apply(empleadoModel));
 		return toEmpleadoModel.apply(empleado);
 	}
 
@@ -183,6 +198,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     }
 
     private List<EmpleadoModel>  toModel(List<Empleado> listEmpleados) {
-		return listEmpleados.stream().map(toEmpleadoModel).collect(Collectors.toList());
+		return listEmpleados
+				.stream()
+				.map(toEmpleadoModel)
+				.collect(Collectors.toList());
 	}
 }

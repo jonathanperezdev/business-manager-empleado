@@ -8,13 +8,17 @@ public enum ErrorEnum {
 	EMPLEADO_OFICINA("El empleado tiene un cargo diferente a Operario u Oficial, no puede ser asociado a una obra"),
 	EMPLEADO_OBRA("Un Operario u Oficial solo puede ser asociado a una obra"),
 	EMPLEADOS_NOT_FOUND_BY_CARGO("No se encontraron empleados con el cargo [%s] "),
+	EMPLEADO_DUPLICATE_TIPO_AND_NUMBER_DOC("Ya existe un empleado con tipo [%s] y numero [%s] de documento"),
 	
 	//Cargo
 	CARGO_BY_NAME_NOT_FOUND("No existe un cargo con el nombre %s"),
 	CARGOS_NOT_FOUND("No existen cargos"),
 	
 	//Ubicaciones
-	UBICACIONES_NOT_FOUND("No existen ubicaciones")
+	UBICACIONES_NOT_FOUND("No existen ubicaciones"),
+
+	//Tipo Documento
+	TIPO_DOCUMENTOS_NOT_FOUND("No existen tipos de docuemntos")
 	;
 	
 	private String message;

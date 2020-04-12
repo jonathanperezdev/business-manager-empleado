@@ -12,6 +12,12 @@ public class EmpleadoModel {
 	
 	@NonNull
     private Long id;
+
+	@NonNull
+    private Integer tipoDocumento;
+
+    @NonNull
+    private String numeroDocumento;
     
     @NonNull
     private String nombres;

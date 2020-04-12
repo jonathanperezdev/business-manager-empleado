@@ -101,7 +101,10 @@ public class UbicacionServiceImpl implements UbicacionService {
     	empleadoService.updateUbicacion(idEmpleados, null);    
     }
 
-    public List<UbicacionModel> toModel(List<Ubicacion> entities) {
-        return entities.stream().map(toUbicacionModel).collect(Collectors.toList());
+    private List<UbicacionModel> toModel(List<Ubicacion> entities) {
+        return entities
+				.stream()
+				.map(toUbicacionModel)
+				.collect(Collectors.toList());
     }
 }
