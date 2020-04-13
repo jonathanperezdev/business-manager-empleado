@@ -13,10 +13,4 @@ public class ServiceConfig {
     public ModelMapper modelMapper () {
         return new ModelMapper();
     }
-
-    @Bean
-    public ConversionService conversionService () {
-        DefaultConversionService service = new DefaultConversionService();
-        return service;
-    }
 }
