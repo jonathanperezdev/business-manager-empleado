@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Configuration
-public class ConverterConfig {
+public class ConversionConfig {
 
     @Autowired
     private ModelMapper modelMapper;
