@@ -2,7 +2,7 @@ package com.business.manager.exception.error;
 
 public enum ErrorEnum {
 	//Empleado
-	EMPLEADO_NOT_FOUND("No se encontro el empleado con el id[%d]"),
+	EMPLEADO_NOT_FOUND("No se encontro el empleado con el tipo [%s] y numero [%s] de documento"),
 	EMPLEADOS_NOT_FOUND("No se encontraron empleados con  nombres[%s] y apellidos[%s]"),
 	DELETE_EMPLEADO_NOT_POSIBLE("%s no puede ser eliminado, tiene empleados asociados "),
 	EMPLEADO_OFICINA("El empleado tiene un cargo diferente a Operario u Oficial, no puede ser asociado a una obra"),

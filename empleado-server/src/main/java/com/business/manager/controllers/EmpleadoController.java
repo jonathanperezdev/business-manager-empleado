@@ -45,10 +45,12 @@ class EmpleadoController {
     @GetMapping("/empleados/search")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<EmpleadoModel> getEmpleadoBySearchCriteria(@Valid @RequestParam Long id, 
-    		@Valid @RequestParam String nombres, 
+    public List<EmpleadoModel> getEmpleadoBySearchCriteria(
+            @Valid @RequestParam Integer tipoDocumento,
+            @Valid @RequestParam String numeroDocumento,
+    		@Valid @RequestParam String nombres,
     		@Valid @RequestParam String apellidos) {
-    	return empleadoService.search(id, nombres, apellidos);
+    	return empleadoService.search(tipoDocumento, numeroDocumento, nombres, apellidos);
     }
     
     @GetMapping("/empleados/searchWithTipoUbicacion")

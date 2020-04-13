@@ -35,10 +35,11 @@ public class EmpleadoModel {
     private String contactoEmergenciaNombres;
     private String contactoEmergenciaApellidos;
     private String contactoEmergenciaTelefono;
-    
     private Integer cargo;
-    private Integer idUbicacion;
-    
-    private UbicacionModel ubicacion;
+    private Integer ubicacion;
+
+    //Properties not mapped with Entity
+    private UbicacionModel ubicacionModel;
+    private TipoDocumentoModel tipoDocumentoModel;
 
 }

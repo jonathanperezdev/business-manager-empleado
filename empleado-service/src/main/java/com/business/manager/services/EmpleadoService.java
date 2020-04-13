@@ -13,9 +13,10 @@ public interface EmpleadoService {
 	EmpleadoModel updateEmpleado(Long id, EmpleadoModel empleadoModel);
 	void deleteEmpleado(Long id);
 
-	List<EmpleadoModel> search(final Long id,
-			final String nombres, 
-			final String apellidos);
+	List<EmpleadoModel> search(final Integer tipoDocumento,
+							   final String numeroDocumento,
+							   final String nombres,
+							   final String apellidos);
 
 	List<EmpleadoModel> searchByCargo(String cargoNombre);
 	

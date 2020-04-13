@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long>{
 	
-	List<Empleado> findByNombresContainingAndApellidosContaining(String nombres, String apellidos);
+	List<Empleado> findByNombresContainingIgnoreCaseAndApellidosContainingIgnoreCase(String nombres, String apellidos);
 	List<Empleado> findByCargoOrderByCargo(Integer cargo);
 	List<Empleado> findByUbicacion(Integer ubicacion);
 	List<Empleado> findByUbicacionOrderByCargoAscNombresAsc(Integer ubicacion);
