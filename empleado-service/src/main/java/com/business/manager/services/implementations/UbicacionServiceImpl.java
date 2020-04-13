@@ -17,6 +17,7 @@ import com.business.manager.services.EmpleadoService;
 import com.business.manager.services.UbicacionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +35,7 @@ public class UbicacionServiceImpl implements UbicacionService {
 	private EmpleadoService empleadoService;
 
 	@Autowired
+	@Qualifier("customConversionService")
 	private ConversionService conversionService;
 
 	@Override
@@ -55,6 +57,7 @@ public class UbicacionServiceImpl implements UbicacionService {
 	@Override
 	public UbicacionModel upsertUbicacion(UbicacionModel ubicacionModel) {
 		Ubicacion ubicacion = conversionService.convert(ubicacionModel, Ubicacion.class);
+		ubicacionRepository.save(ubicacion);
 		return conversionService.convert(ubicacion, UbicacionModel.class);
 	}
 

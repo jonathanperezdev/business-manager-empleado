@@ -19,6 +19,7 @@ import com.business.manager.exception.error.ErrorEnum;
 import com.business.manager.model.EmpleadoModel;
 import com.business.manager.services.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -36,6 +37,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	private TipoDocumentoRepository tipoDocumentoRepository;
 
 	@Autowired
+	@Qualifier("customConversionService")
 	private ConversionService conversionService;
 
 	@Override
