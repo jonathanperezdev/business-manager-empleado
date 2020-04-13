@@ -4,26 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.business.manager.dao.entities.Cargo;
 import com.business.manager.dao.entities.Empleado;
-import com.business.manager.dao.entities.Ubicacion;
 import com.business.manager.dao.repositories.CargoRepository;
 import com.business.manager.dao.repositories.EmpleadoRepository;
 import com.business.manager.dao.repositories.TipoDocumentoRepository;
-import com.business.manager.dao.repositories.UbicacionRepository;
 import com.business.manager.enums.CargosEnum;
 import com.business.manager.enums.UbicacionesEnum;
 import com.business.manager.exception.NoDataFoundException;
 import com.business.manager.exception.OperationNotPosibleException;
 import com.business.manager.exception.error.ErrorEnum;
 import com.business.manager.model.EmpleadoModel;
-import com.business.manager.model.UbicacionModel;
 import com.business.manager.services.EmpleadoService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -31,32 +28,21 @@ import org.springframework.util.CollectionUtils;
 public class EmpleadoServiceImpl implements EmpleadoService {
 
 	@Autowired
-	private ModelMapper modelMapper;
-	
-	@Autowired
 	private EmpleadoRepository empleadoRepository;
 	
 	@Autowired
 	private CargoRepository cargoRepository;
 	
 	@Autowired
-	private UbicacionRepository ubicacionRepository;
-
-	@Autowired
 	private TipoDocumentoRepository tipoDocumentoRepository;
 
-	private Function<Empleado, EmpleadoModel> toEmpleadoModel = empleado -> modelMapper.map(empleado, EmpleadoModel.class);
-	private Function<EmpleadoModel, Empleado> toEmpleadoEntity = empleado -> modelMapper.map(empleado, Empleado.class);
+	@Autowired
+	@Qualifier("customConversionService")
+	private ConversionService conversionService;
 
 	@Override
 	public EmpleadoModel findEmpleado(Long id) {
-		Ubicacion ubicacion;
-		EmpleadoModel empleado = toEmpleadoModel.apply(empleadoRepository.findById(id).get());
-
-		if(empleado.getIdUbicacion() != null) {
-			ubicacion = ubicacionRepository.findById(empleado.getIdUbicacion()).get();
-			empleado.setUbicacion(modelMapper.map(ubicacion, UbicacionModel.class));
-		}
+		EmpleadoModel empleado = conversionService.convert(empleadoRepository.findById(id).get(), EmpleadoModel.class);
 
 		return empleado;
 	}
@@ -74,8 +60,8 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 					empleadoModel.getNumeroDocumento());
 		}
 
-		empleado = empleadoRepository.save(toEmpleadoEntity.apply(empleadoModel));
-		return toEmpleadoModel.apply(empleado);
+		empleado = empleadoRepository.save(conversionService.convert(empleadoModel, Empleado.class));
+		return conversionService.convert(empleado, EmpleadoModel.class);
 	}
 
 	@Override
@@ -90,27 +76,33 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	}
 
 	@Override
-	public List<EmpleadoModel> search(final Long id,
+	public List<EmpleadoModel> search(final Integer tipoDocumento,
+									  final String numeroDocumento,
 									  final String nombres,
 									  final String apellidos){
     	
     	List<Empleado> listEmpleados = new ArrayList<>();
     	
-    	if(Objects.isNull(id)){
-    		listEmpleados = empleadoRepository.findByNombresContainingAndApellidosContaining(nombres, apellidos);
+    	if(numeroDocumento.isEmpty()){
+    		listEmpleados = empleadoRepository
+					.findByNombresContainingIgnoreCaseAndApellidosContainingIgnoreCase(nombres, apellidos);
     		
     		if(CollectionUtils.isEmpty(listEmpleados)) {
     			throw new NoDataFoundException(ErrorEnum.EMPLEADOS_NOT_FOUND, nombres, apellidos);
     		}
     	}else {
-    		Optional<Empleado> optEmpleado = empleadoRepository.findById(id);
-    		if(!optEmpleado.isPresent()) {
-    			throw new NoDataFoundException(ErrorEnum.EMPLEADO_NOT_FOUND, id);
+    		Empleado empleado =
+					empleadoRepository
+							.findByTipoDocumentoAndNumeroDocumento(tipoDocumento, numeroDocumento);
+    		if(Objects.isNull(empleado)) {
+    			throw new NoDataFoundException(ErrorEnum.EMPLEADO_NOT_FOUND,
+						tipoDocumentoRepository.findById(tipoDocumento).get().getNombre(),
+						numeroDocumento);
     		}
     		
-    		listEmpleados.add(optEmpleado.get());
+    		listEmpleados.add(empleado);
     	}
-    	
+
     	return toModel(listEmpleados);
     }
 	
@@ -126,8 +118,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     		List<Integer> idCargos = new ArrayList<>();
     		idCargos.add(cargoRepository.findByNombre(CargosEnum.OPERARIO.getNombre()).getId());
     		idCargos.add(cargoRepository.findByNombre(CargosEnum.OFICIAL.getNombre()).getId());
-    		
-    		
+
     		listEmpleados = (UbicacionesEnum.OBRA.getNombre().toUpperCase().equals(tipoUbicacion))
     				? empleadoRepository
     						.findByUbicacionAndCargoInAndNombresContainingAndApellidosContainingOrderByCargoAscNombresAsc(
@@ -166,7 +157,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     	}
     	
     	return toModel(listEmpleados);
-    	
+
 	}
     
     @Override
@@ -197,10 +188,10 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     	});
     }
 
-    private List<EmpleadoModel>  toModel(List<Empleado> listEmpleados) {
+    private List<EmpleadoModel> toModel(List<Empleado> listEmpleados) {
 		return listEmpleados
 				.stream()
-				.map(toEmpleadoModel)
+				.map(empleado -> conversionService.convert(empleado, EmpleadoModel.class))
 				.collect(Collectors.toList());
 	}
 }

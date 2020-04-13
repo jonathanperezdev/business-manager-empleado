@@ -1,16 +1,21 @@
 package com.business.manager.services.implementations;
 
 import com.business.manager.dao.entities.Cargo;
+import com.business.manager.dao.entities.TipoDocumento;
 import com.business.manager.dao.repositories.CargoRepository;
 import com.business.manager.dao.repositories.EmpleadoRepository;
 import com.business.manager.exception.NoDataFoundException;
 import com.business.manager.exception.OperationNotPosibleException;
 import com.business.manager.exception.error.ErrorEnum;
 import com.business.manager.model.CargoModel;
+import com.business.manager.model.TipoDocumentoModel;
 import com.business.manager.services.CargoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -22,16 +27,14 @@ import java.util.stream.Collectors;
 public class CargoServiceImpl implements CargoService {
 
 	@Autowired
-	private ModelMapper modelMapper;
-
-	@Autowired
 	private CargoRepository cargoRepository;
 
 	@Autowired
 	private EmpleadoRepository empleadoRepository;
 
-	private Function<Cargo, CargoModel> toCargoModel = cargo -> modelMapper.map(cargo, CargoModel.class);
-	private Function<CargoModel, Cargo> toCargoEntity = cargo -> modelMapper.map(cargo, Cargo.class);
+	@Autowired
+	@Qualifier("customConversionService")
+	private ConversionService conversionService;
 
 	@Override
 	public List<CargoModel> findAllCargos() {
@@ -44,13 +47,13 @@ public class CargoServiceImpl implements CargoService {
 
 	@Override
 	public CargoModel findCargo(Integer id) {
-		return toCargoModel.apply(cargoRepository.findById(id).get());
+		return conversionService.convert(cargoRepository.findById(id).get(), CargoModel.class);
 	}
 
 	@Override
 	public CargoModel upsertCargo(CargoModel cargoModel) {
-		Cargo cargo = cargoRepository.save(toCargoEntity.apply(cargoModel));
-		return toCargoModel.apply(cargo);
+		Cargo cargo = cargoRepository.save(conversionService.convert(cargoModel, Cargo.class));
+		return conversionService.convert(cargo, CargoModel.class);
 	}
 
 	@Override
@@ -79,10 +82,10 @@ public class CargoServiceImpl implements CargoService {
 		return cargo;
 	}
 
-	private List<CargoModel> toModel(List<Cargo> cargos) {
-		return cargos
+	private List<CargoModel> toModel(List<Cargo> listCargos) {
+		return listCargos
 				.stream()
-				.map(toCargoModel)
+				.map(cargo -> conversionService.convert(cargo, CargoModel.class))
 				.collect(Collectors.toList());
 	}
 }

@@ -23,7 +23,8 @@ public class UbicacionModel {
 	private String descripcion;
 	private Long ingenieroACargo;
 	private Long oficialACargo;
-	
+
+	//Properties not mapped with Entity
 	private EmpleadoModel ingeniero;
 	private EmpleadoModel oficial;
 }

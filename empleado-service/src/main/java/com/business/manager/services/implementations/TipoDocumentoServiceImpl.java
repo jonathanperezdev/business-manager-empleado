@@ -1,29 +1,32 @@
 package com.business.manager.services.implementations;
 
+import com.business.manager.dao.entities.Empleado;
 import com.business.manager.dao.entities.TipoDocumento;
 import com.business.manager.dao.repositories.TipoDocumentoRepository;
 import com.business.manager.exception.NoDataFoundException;
 import com.business.manager.exception.error.ErrorEnum;
+import com.business.manager.model.EmpleadoModel;
 import com.business.manager.model.TipoDocumentoModel;
 import com.business.manager.services.TipoDocumentoService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class TipoDocumentoServiceImpl implements TipoDocumentoService {
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private TipoDocumentoRepository tipoDocumentoRepository;
 
-    private Function<TipoDocumento, TipoDocumentoModel> toTipoDocumentoModel = tipoDocumento -> modelMapper.map(tipoDocumento , TipoDocumentoModel.class);
+    @Autowired
+    @Qualifier("customConversionService")
+    private ConversionService conversionService;
 
     @Override
     public List<TipoDocumentoModel> getAllTipoDocumentos() {
@@ -35,10 +38,10 @@ public class TipoDocumentoServiceImpl implements TipoDocumentoService {
         return listTipoDocumentos;
     }
 
-    private List<TipoDocumentoModel> toModel(List<TipoDocumento> entities) {
-        return entities
+    private List<TipoDocumentoModel> toModel(List<TipoDocumento> listTipoDocumentos) {
+        return listTipoDocumentos
                 .stream()
-                .map(toTipoDocumentoModel)
+                .map(tipoDocumento -> conversionService.convert(tipoDocumento, TipoDocumentoModel.class))
                 .collect(Collectors.toList());
     }
 }
