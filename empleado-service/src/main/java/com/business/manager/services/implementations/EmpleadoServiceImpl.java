@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.business.manager.converters.ConverterServiceWrapper;
 import com.business.manager.dao.entities.Cargo;
 import com.business.manager.dao.entities.Empleado;
 import com.business.manager.dao.repositories.CargoRepository;
@@ -20,6 +19,7 @@ import com.business.manager.exception.error.ErrorEnum;
 import com.business.manager.model.EmpleadoModel;
 import com.business.manager.services.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,11 +36,11 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	private TipoDocumentoRepository tipoDocumentoRepository;
 
 	@Autowired
-	private ConverterServiceWrapper converterService;
+	private ConversionService conversionService;
 
 	@Override
 	public EmpleadoModel findEmpleado(Long id) {
-		EmpleadoModel empleado = converterService.convert(empleadoRepository.findById(id).get(), EmpleadoModel.class);
+		EmpleadoModel empleado = conversionService.convert(empleadoRepository.findById(id).get(), EmpleadoModel.class);
 
 		return empleado;
 	}
@@ -58,8 +58,8 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 					empleadoModel.getNumeroDocumento());
 		}
 
-		empleado = empleadoRepository.save(converterService.convert(empleadoModel, Empleado.class));
-		return converterService.convert(empleado, EmpleadoModel.class);
+		empleado = empleadoRepository.save(conversionService.convert(empleadoModel, Empleado.class));
+		return conversionService.convert(empleado, EmpleadoModel.class);
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     private List<EmpleadoModel> toModel(List<Empleado> listEmpleados) {
 		return listEmpleados
 				.stream()
-				.map(empleado -> converterService.convert(empleado, EmpleadoModel.class))
+				.map(empleado -> conversionService.convert(empleado, EmpleadoModel.class))
 				.collect(Collectors.toList());
 	}
 }

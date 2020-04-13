@@ -1,6 +1,6 @@
 package com.business.manager.converters.implementations;
 
-import com.business.manager.converters.ConverterServiceWrapper;
+import com.business.manager.converters.EmpleadoModelConverter;
 import com.business.manager.dao.entities.Empleado;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
+//@Component
 public class ConverterServiceWrapperImpl implements ConverterServiceWrapper {
     
-    @Autowired
+    /*@Autowired
     private DefaultConversionService conversionService;
 
     @Autowired
@@ -30,5 +30,5 @@ public class ConverterServiceWrapperImpl implements ConverterServiceWrapper {
     @Override
     public <T> T convert(Object source, Class<T> targetType){
         return conversionService.convert(source, targetType);
-    }
+    }*/
 }

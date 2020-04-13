@@ -1,4 +1,4 @@
-package com.business.manager.converters.implementations;
+package com.business.manager.converters;
 
 import com.business.manager.dao.entities.Empleado;
 import com.business.manager.dao.entities.TipoDocumento;

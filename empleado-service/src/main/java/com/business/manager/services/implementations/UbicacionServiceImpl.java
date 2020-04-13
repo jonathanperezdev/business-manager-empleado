@@ -17,6 +17,7 @@ import com.business.manager.services.EmpleadoService;
 import com.business.manager.services.UbicacionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,9 +25,6 @@ import org.springframework.util.CollectionUtils;
 public class UbicacionServiceImpl implements UbicacionService {
 
     @Autowired
-    private ModelMapper modelMapper;
-	
-	@Autowired
 	private UbicacionRepository ubicacionRepository;
 	
 	@Autowired
@@ -35,8 +33,8 @@ public class UbicacionServiceImpl implements UbicacionService {
 	@Autowired
 	private EmpleadoService empleadoService;
 
-	private Function<Ubicacion, UbicacionModel> toUbicacionModel = ubicacion -> modelMapper.map(ubicacion , UbicacionModel.class);
-	private Function<UbicacionModel, Ubicacion> toUbicacionEntity = ubicacion -> modelMapper.map(ubicacion , Ubicacion.class);
+	@Autowired
+	private ConversionService conversionService;
 
 	@Override
 	public List<UbicacionModel> findAllUbicaciones() {
@@ -49,26 +47,15 @@ public class UbicacionServiceImpl implements UbicacionService {
 
     @Override
     public UbicacionModel findUbicacion(Integer id) {
-    	Empleado ingeniero;
-    	Empleado oficial;
-    	UbicacionModel ubicacion = toUbicacionModel.apply(ubicacionRepository.findById(id).get());
-    	
-    	if(ubicacion.getIngenieroACargo() != null) {
-			ingeniero = empleadoRepository.findById(ubicacion.getIngenieroACargo()).get();
-    		ubicacion.setIngeniero(modelMapper.map(ingeniero, EmpleadoModel.class));
-		}
-		
-		if(ubicacion.getOficialACargo() != null) {
-			oficial = empleadoRepository.findById(ubicacion.getOficialACargo()).get();
-    		ubicacion.setOficial(modelMapper.map(oficial, EmpleadoModel.class));
-		}
+    	UbicacionModel ubicacion = conversionService.convert(ubicacionRepository.findById(id).get(), UbicacionModel.class);
+
     	return ubicacion;
     }
 
 	@Override
 	public UbicacionModel upsertUbicacion(UbicacionModel ubicacionModel) {
-		Ubicacion ubicacion = ubicacionRepository.save(toUbicacionEntity.apply(ubicacionModel));
-		return toUbicacionModel.apply(ubicacion);
+		Ubicacion ubicacion = conversionService.convert(ubicacionModel, Ubicacion.class);
+		return conversionService.convert(ubicacion, UbicacionModel.class);
 	}
 
 	@Override
@@ -98,13 +85,13 @@ public class UbicacionServiceImpl implements UbicacionService {
     	    	
     	ubicacionRepository.save(ubicacion);
     	
-    	empleadoService.updateUbicacion(idEmpleados, null);    
+    	empleadoService.updateUbicacion(idEmpleados, idUbicacion);
     }
 
-    private List<UbicacionModel> toModel(List<Ubicacion> entities) {
-        return entities
+    private List<UbicacionModel> toModel(List<Ubicacion> listUbicaciones) {
+		return listUbicaciones
 				.stream()
-				.map(toUbicacionModel)
+				.map(ubicacion -> conversionService.convert(ubicacion, UbicacionModel.class))
 				.collect(Collectors.toList());
-    }
+	}
 }
