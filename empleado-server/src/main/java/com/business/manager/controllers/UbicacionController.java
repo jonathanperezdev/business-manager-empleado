@@ -71,8 +71,7 @@ class UbicacionController {
         LOG.info("Request para configurar Ubicacion: {}", confUbicReq);
         ubicacionService.configuraUbicacion(confUbicReq.getIdUbicacion(), 
         		confUbicReq.getIngenieroACargo(), 
-        		confUbicReq.getOficialACargo(), 
-        		confUbicReq.getIdEmpleados());
+        		confUbicReq.getOficialACargo());
     }
 
     @DeleteMapping("/ubicacion/{id}")

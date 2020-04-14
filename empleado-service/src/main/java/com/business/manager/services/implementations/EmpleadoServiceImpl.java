@@ -1,16 +1,18 @@
 package com.business.manager.services.implementations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.business.manager.dao.entities.Cargo;
 import com.business.manager.dao.entities.Empleado;
+import com.business.manager.dao.entities.Ubicacion;
 import com.business.manager.dao.repositories.CargoRepository;
 import com.business.manager.dao.repositories.EmpleadoRepository;
 import com.business.manager.dao.repositories.TipoDocumentoRepository;
+import com.business.manager.dao.repositories.UbicacionRepository;
 import com.business.manager.enums.CargosEnum;
 import com.business.manager.enums.UbicacionesEnum;
 import com.business.manager.exception.NoDataFoundException;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @Service
 public class EmpleadoServiceImpl implements EmpleadoService {
@@ -35,6 +38,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	
 	@Autowired
 	private TipoDocumentoRepository tipoDocumentoRepository;
+
+	@Autowired
+	private UbicacionRepository ubicacionRepository;
 
 	@Autowired
 	@Qualifier("customConversionService")
@@ -91,15 +97,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     			throw new NoDataFoundException(ErrorEnum.EMPLEADOS_NOT_FOUND, nombres, apellidos);
     		}
     	}else {
-    		Empleado empleado =
-					empleadoRepository
-							.findByTipoDocumentoAndNumeroDocumento(tipoDocumento, numeroDocumento);
-    		if(Objects.isNull(empleado)) {
-    			throw new NoDataFoundException(ErrorEnum.EMPLEADO_NOT_FOUND,
-						tipoDocumentoRepository.findById(tipoDocumento).get().getNombre(),
-						numeroDocumento);
-    		}
-    		
+			Empleado empleado = findByTipoAndNumeroDocumento(tipoDocumento, numeroDocumento);
     		listEmpleados.add(empleado);
     	}
 
@@ -107,29 +105,29 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     }
 	
 	@Override
-	public List<EmpleadoModel> searchWithTipoUbicacion(final String tipoUbicacion,
-			final Long id,
+	public List<EmpleadoModel> searchWithTipoUbicacion(
+			final Integer idUbicacion,
+			final Integer tipoDocumento,
+			final String numeroDocumento,
 			final String nombres, 
 			final String apellidos){
-		
+
+		Ubicacion ubicacion = ubicacionRepository.findById(idUbicacion).get();
 		List<Empleado> listEmpleados = new ArrayList<>();
     	
-    	if(Objects.isNull(id)){
+    	if(numeroDocumento.isEmpty()){
     		List<Integer> idCargos = new ArrayList<>();
-    		idCargos.add(cargoRepository.findByNombre(CargosEnum.OPERARIO.getNombre()).getId());
-    		idCargos.add(cargoRepository.findByNombre(CargosEnum.OFICIAL.getNombre()).getId());
+    		idCargos.add(cargoRepository.findByNombreIgnoreCase(CargosEnum.OPERARIO.getNombre()).getId());
+    		idCargos.add(cargoRepository.findByNombreIgnoreCase(CargosEnum.OFICIAL.getNombre()).getId());
 
-    		listEmpleados = (UbicacionesEnum.OBRA.getNombre().toUpperCase().equals(tipoUbicacion))
-    				? empleadoRepository
-    						.findByUbicacionAndCargoInAndNombresContainingAndApellidosContainingOrderByCargoAscNombresAsc(
-    								null, 
-    								idCargos, 
-    								nombres, 
-    								apellidos)
+    		listEmpleados = (UbicacionesEnum.OBRA.name().equalsIgnoreCase(ubicacion.getTipo().name()))
+    				? empleadoRepository.findEmpleadosWithoutUbicacion(idCargos,
+					nombres,
+					apellidos,
+					ubicacion.getOficialACargo())
     				:empleadoRepository
-					.findByUbicacionAndCargoNotInAndNombresContainingAndApellidosContainingOrderByCargoAscNombresAsc(
-							null, 
-							idCargos, 
+					.findByUbicacionIsNullAndCargoNotInAndNombresContainingIgnoreCaseAndApellidosContainingIgnoreCaseOrderByCargoAscNombresAsc(
+							idCargos,
 							nombres, 
 							apellidos);
     		
@@ -137,32 +135,62 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     			throw new NoDataFoundException(ErrorEnum.EMPLEADOS_NOT_FOUND, nombres, apellidos);
     		}
     	}else {
-    		Optional<Empleado> optEmpleado = empleadoRepository.findById(id);
-    		if(!optEmpleado.isPresent()) {
-    			throw new NoDataFoundException(ErrorEnum.EMPLEADO_NOT_FOUND, id);
-    		}
-    		
-    		String cargo = cargoRepository.findById(optEmpleado.get().getCargo()).get().getNombre();
-    		
-    		if(UbicacionesEnum.OBRA.getNombre().toUpperCase().equals(tipoUbicacion)
-    				&& !cargo.toUpperCase().equals(CargosEnum.OPERARIO.getNombre().toUpperCase())
-    				&& !cargo.toUpperCase().equals(CargosEnum.OFICIAL.getNombre().toUpperCase())) {
-    			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_OBRA);
-    		}else if(cargo.toUpperCase().equals(CargosEnum.OPERARIO.getNombre().toUpperCase()) 
-    				|| cargo.toUpperCase().equals(CargosEnum.OFICIAL.getNombre().toUpperCase())) {
-    			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_OFICINA);
-    		}
-    		
-    		listEmpleados.add(optEmpleado.get());
+			Empleado empleado = findByTipoAndNumeroDocumento(tipoDocumento, numeroDocumento);
+			validateAddEmpleadoToUbicacion(ubicacion, empleado);
+    		listEmpleados.add(empleado);
     	}
     	
     	return toModel(listEmpleados);
+	}
 
+	private void validateAddEmpleadoToUbicacion(Ubicacion ubicacion, Empleado empleado){
+
+		if(empleado.getId().equals(ubicacion.getIngenieroACargo())){
+			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_ALREADY_ASSIGNED,
+					"ingeniero a cargo");
+		}
+
+		if(empleado.getId().equals(ubicacion.getOficialACargo())) {
+			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_ALREADY_ASSIGNED,
+					"oficial a cargo");
+		}
+
+		if(UbicacionesEnum.OBRA.name().equalsIgnoreCase(ubicacion.getTipo().name())
+				&& !isCargoInOperarioOrOficial(empleado.getCargo())){
+			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_OBRA);
+		}
+
+		if(!UbicacionesEnum.OBRA.name().equalsIgnoreCase(ubicacion.getTipo().name()) &&
+				isCargoInOperarioOrOficial(empleado.getCargo())) {
+			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_OFICINA);
+		}
+
+	}
+
+	private boolean isCargoInOperarioOrOficial(Integer idCargo) {
+		String cargo = cargoRepository.findById(idCargo).get().getNombre();
+
+		return StringUtils.equalsAnyIgnoreCase(cargo,
+				CargosEnum.OPERARIO.getNombre(),
+				CargosEnum.OFICIAL.getNombre());
+	}
+
+	private Empleado findByTipoAndNumeroDocumento(Integer tipoDocumento, String numeroDocumento) {
+		Empleado empleado =
+				empleadoRepository
+						.findByTipoDocumentoAndNumeroDocumento(tipoDocumento, numeroDocumento);
+		if(Objects.isNull(empleado)) {
+			throw new NoDataFoundException(ErrorEnum.EMPLEADO_NOT_FOUND,
+					tipoDocumentoRepository.findById(tipoDocumento).get().getNombre(),
+					numeroDocumento);
+		}
+
+		return empleado;
 	}
     
     @Override
     public List<EmpleadoModel> searchByCargo(String cargoNombre){
-    	Cargo cargo = cargoRepository.findByNombre(cargoNombre);
+    	Cargo cargo = cargoRepository.findByNombreIgnoreCase(cargoNombre);
     	List<EmpleadoModel> listEmpleados = toModel(empleadoRepository.findByCargoOrderByCargo(cargo.getId()));
     	
     	if(CollectionUtils.isEmpty(listEmpleados)) {
