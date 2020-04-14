@@ -79,16 +79,13 @@ public class UbicacionServiceImpl implements UbicacionService {
     @Override
     public void configuraUbicacion(Integer idUbicacion,
     		Long ingeniero, 
-    		Long oficial, 
-    		List<Long> idEmpleados) {
+    		Long oficial) {
     	Ubicacion ubicacion = ubicacionRepository.findById(idUbicacion).get();
     	
     	ubicacion.setIngenieroACargo(ingeniero);    	
     	ubicacion.setOficialACargo(oficial);
     	    	
     	ubicacionRepository.save(ubicacion);
-    	
-    	empleadoService.updateUbicacion(idEmpleados, idUbicacion);
     }
 
     private List<UbicacionModel> toModel(List<Ubicacion> listUbicaciones) {

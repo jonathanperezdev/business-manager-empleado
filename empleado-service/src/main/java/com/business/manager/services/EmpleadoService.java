@@ -24,6 +24,10 @@ public interface EmpleadoService {
 	
 	void updateUbicacion(List<Long> idEmpleados, Integer idUbicacion);
 
-	List<EmpleadoModel> searchWithTipoUbicacion(String tipoUbicacion, Long id, String nombres, String apellidos);
+	List<EmpleadoModel> searchWithTipoUbicacion(Integer idUbicacion,
+												Integer tipoDocumento,
+												String numeroDocumento,
+												String nombres,
+												String apellidos);
 	    
 }

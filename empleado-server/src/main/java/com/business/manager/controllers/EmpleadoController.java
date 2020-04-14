@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import com.business.manager.model.ConfigUbicacionRequest;
 import com.business.manager.model.EmpleadoModel;
+import com.business.manager.model.UpdateUbicacionRequest;
 import com.business.manager.services.EmpleadoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +58,15 @@ class EmpleadoController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<EmpleadoModel> getEmpleadoBySearchWithTipoUbicacion(
-    		@Valid @RequestParam String tipoUbicacion,
-    		@Valid @RequestParam Long id, 
+    		@Valid @RequestParam Integer idUbicacion,
+            @Valid @RequestParam Integer tipoDocumento,
+            @Valid @RequestParam String numeroDocumento,
     		@Valid @RequestParam String nombres, 
     		@Valid @RequestParam String apellidos) {
     	return empleadoService.searchWithTipoUbicacion(
-    			tipoUbicacion, 
-    			id, 
+    			idUbicacion,
+    			tipoDocumento,
+    			numeroDocumento,
     			nombres, 
     			apellidos);
     }
@@ -92,9 +95,9 @@ class EmpleadoController {
     
     @PutMapping("/empleados/ubicacion")
     @ResponseStatus(HttpStatus.OK)
-    void UpdateUbicacion(@Valid @RequestBody ConfigUbicacionRequest confReq ) {
-        LOG.info("Actualizando empleados con ubicacion {}", confReq.getIdUbicacion());
-        empleadoService.updateUbicacion(confReq.getIdEmpleados(), confReq.getIdUbicacion());
+    void updateUbicacion(@Valid @RequestBody UpdateUbicacionRequest request) {
+        LOG.info("Actualizando empleados con ubicacion {}", request.getIdUbicacion());
+        empleadoService.updateUbicacion(request.getIdEmpleados(), request.getIdUbicacion());
     }    
 
     @PutMapping("/empleado/{id}")

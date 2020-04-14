@@ -38,7 +38,7 @@ public class CargoServiceImpl implements CargoService {
 
 	@Override
 	public List<CargoModel> findAllCargos() {
-		List<CargoModel> listCargosModel = toModel(cargoRepository.findAll());
+		List<CargoModel> listCargosModel = toModel(cargoRepository.findAllByOrderByIdAsc());
 		if(CollectionUtils.isEmpty(listCargosModel)) {
 			throw new NoDataFoundException(ErrorEnum.CARGOS_NOT_FOUND);
 		}
@@ -73,7 +73,7 @@ public class CargoServiceImpl implements CargoService {
 
 	@Override
 	public Cargo findByNombre(String nombre)	 {
-		Cargo cargo = cargoRepository.findByNombre(nombre);
+		Cargo cargo = cargoRepository.findByNombreIgnoreCase(nombre);
 
 		if(Objects.isNull(cargo)) {
 			throw new NoDataFoundException(ErrorEnum.CARGO_BY_NAME_NOT_FOUND, nombre);

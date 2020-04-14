@@ -16,6 +16,5 @@ public interface UbicacionService{
 	
     void configuraUbicacion(Integer idUbicacion,
     	Long ingeniero, 
-    	Long oficial, 
-    	List<Long> idEmpleados);
+    	Long oficial);
 }
