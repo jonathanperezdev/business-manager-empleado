@@ -30,7 +30,7 @@ public class UbicacionModelConverter implements Converter<Ubicacion, UbicacionMo
         }
 
         if(Objects.nonNull(ubicacionModel.getOficialACargo())) {
-            ubicacionModel.setIngeniero(getEmpleadoById(ubicacionModel.getOficialACargo()));
+            ubicacionModel.setOficial(getEmpleadoById(ubicacionModel.getOficialACargo()));
         }
 
         return ubicacionModel;
