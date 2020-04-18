@@ -23,4 +23,7 @@ The structure and some initial data is created using flywaydb dependency, the sq
 ##Releases
 
 #Release 1
-Microservice created to manage employees with docker-compose 
+Microservice created to manage employees with docker-compose
+
+#Release 2
+Implementation of the SpringCloud discovery and config clients  
