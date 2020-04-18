@@ -1,0 +1,19 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+
+server:
+  port: 8000
+
+spring:
+  profiles:
+    #Don't delete this property because does not work -Dspring.profiles.active=docker in docker-compouse.yml
+    active: docker
+  application:
+    name: BMEMPLEADO
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: BMCONFIGURATION

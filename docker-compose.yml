@@ -1,9 +1,7 @@
 version: '3.5'
 services:
-  BM_DB_EMPLEADO:
-    image: postgres:11
-    networks:
-      - BM_EMPLEADO_NETWORK
+  BMDBEMPLEADO:
+    image: postgres:12
     volumes:
       - business-manager-data:/var/lib/postgresql/data
     expose:
@@ -15,23 +13,25 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=postgres
     restart: unless-stopped
-  BM_EMPLEADO:
+  BMEMPLEADO:
     image: business-manager-empleado-server:1.0-SNAPSHOT
-    networks:
-      - BM_EMPLEADO_NETWORK
     environment:
       - JAVA_OPTS=
+        -DEUREKA_SERVER=http://BMDISCOVERY:8761/eureka
+        -Dspring.profiles.active=docker
         -agentlib:jdwp=transport=dt_socket,address=5081,server=y,suspend=n
-    restart: on-failure
+    restart: on-failure:10
     expose:
-      - 8080
+      - 8000
       - 5081
     ports:
-      - 8080:8080
+      - 8000:8000
       - 5081:5081
     depends_on:
-      - BM_DB_EMPLEADO
+      - BMDBEMPLEADO
 volumes:
   business-manager-data:
 networks:
-  BM_EMPLEADO_NETWORK:
+  default:
+    external:
+      name: BM_NETWORK

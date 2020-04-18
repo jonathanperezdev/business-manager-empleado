@@ -15,6 +15,12 @@
   <packaging>pom</packaging>
   <name>empleado</name>
 
+  <properties>
+    <java.version>1.8</java.version>
+    <spring-cloud.version>Hoxton.SR3</spring-cloud.version>
+    <spring-cloud.dependency>2.2.0.RELEASE</spring-cloud.dependency>
+  </properties>
+
   <modules>
     <module>empleado-service</module>
     <module>empleado-dao</module>
@@ -59,6 +65,18 @@
       <version>3.10</version>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <plugins>
