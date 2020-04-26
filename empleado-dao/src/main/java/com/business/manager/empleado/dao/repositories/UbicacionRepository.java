@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UbicacionRepository extends JpaRepository<Ubicacion, Integer> {
 	List<Ubicacion> findAllByOrderByTipoAscNombreAsc();
+	Ubicacion findByNombreIgnoreCase(String nombre);
 }

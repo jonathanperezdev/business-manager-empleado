@@ -47,14 +47,22 @@ public class CargoServiceImpl implements CargoService {
 
 	@Override
 	public CargoModel upsertCargo(CargoModel cargoModel) {
-		Cargo cargo = cargoRepository.save(conversionService.convert(cargoModel, Cargo.class));
+		Cargo cargo = cargoRepository.findByNombreIgnoreCase(cargoModel.getNombre());
+
+		if(Objects.nonNull(cargo)) {
+			throw new OperationNotPosibleException(ErrorEnum.CARGO_ALREADY_EXIST, cargoModel.getNombre());
+		}
+
+		cargo = cargoRepository.save(conversionService.convert(cargoModel, Cargo.class));
 		return conversionService.convert(cargo, CargoModel.class);
 	}
 
 	@Override
 	public CargoModel updateCargo(Integer id, CargoModel cargoModel) {
 		cargoModel.setId(id);
-		return upsertCargo(cargoModel);
+
+		Cargo cargo = cargoRepository.save(conversionService.convert(cargoModel, Cargo.class));
+		return conversionService.convert(cargo, CargoModel.class);
 	}
 
 	@Override

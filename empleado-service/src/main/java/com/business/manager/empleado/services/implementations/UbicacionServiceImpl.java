@@ -1,6 +1,7 @@
 package com.business.manager.empleado.services.implementations;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.business.manager.empleado.dao.entities.Ubicacion;
@@ -52,15 +53,22 @@ public class UbicacionServiceImpl implements UbicacionService {
 
 	@Override
 	public UbicacionModel upsertUbicacion(UbicacionModel ubicacionModel) {
-		Ubicacion ubicacion = conversionService.convert(ubicacionModel, Ubicacion.class);
-		ubicacionRepository.save(ubicacion);
+		Ubicacion ubicacion = ubicacionRepository.findByNombreIgnoreCase(ubicacionModel.getNombre());
+
+		if(Objects.nonNull(ubicacion)) {
+			throw new OperationNotPosibleException(ErrorEnum.UBICACION_ALREADY_EXIST, ubicacionModel.getNombre());
+		}
+
+		ubicacion = ubicacionRepository.save(conversionService.convert(ubicacionModel, Ubicacion.class));
 		return conversionService.convert(ubicacion, UbicacionModel.class);
 	}
 
 	@Override
 	public UbicacionModel updateUbicacion(Integer id, UbicacionModel ubicacionModel) {
 		ubicacionModel.setId(id);
-		return upsertUbicacion(ubicacionModel);
+		Ubicacion ubicacion = ubicacionRepository.save(conversionService.convert(ubicacionModel, Ubicacion.class));
+
+		return conversionService.convert(ubicacion, UbicacionModel.class);
 	}
     
     @Override

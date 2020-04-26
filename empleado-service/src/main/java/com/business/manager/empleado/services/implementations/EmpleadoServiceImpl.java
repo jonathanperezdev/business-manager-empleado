@@ -72,7 +72,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	@Override
 	public EmpleadoModel updateEmpleado(Long id, EmpleadoModel empleadoModel) {
 		empleadoModel.setId(id);
-		return upsertEmpleado(empleadoModel);
+
+		Empleado empleado = empleadoRepository.save(conversionService.convert(empleadoModel, Empleado.class));
+		return conversionService.convert(empleado, EmpleadoModel.class);
 	}
 
 	@Override

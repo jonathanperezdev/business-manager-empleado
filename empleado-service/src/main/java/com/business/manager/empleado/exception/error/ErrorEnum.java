@@ -14,9 +14,11 @@ public enum ErrorEnum {
 	//Cargo
 	CARGO_BY_NAME_NOT_FOUND("No existe un cargo con el nombre %s"),
 	CARGOS_NOT_FOUND("No existen cargos"),
+	CARGO_ALREADY_EXIST("El cargo %s, ya existe en la base de datos"),
 	
-	//Ubicaciones
+	//Ubicacion
 	UBICACIONES_NOT_FOUND("No existen ubicaciones"),
+	UBICACION_ALREADY_EXIST("La ubicacion %s, ya existe en la base de datos"),
 
 	//Tipo Documento
 	TIPO_DOCUMENTOS_NOT_FOUND("No existen tipos de docuemntos")
