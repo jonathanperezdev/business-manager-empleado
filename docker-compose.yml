@@ -19,11 +19,11 @@ services:
       - JAVA_OPTS=
         -DEUREKA_SERVER=http://BMDISCOVERY:8761/eureka
         -Dspring.profiles.active=docker
-        -agentlib:jdwp=transport=dt_socket,address=5081,server=y,suspend=n
+        -agentlib:jdwp=transport=dt_socket,address=5080,server=y,suspend=n
     restart: on-failure:10
     expose:
       - 8000
-      - 5081
+      - 5080
     ports:
       - 8000:8000
       - 5081:5081
