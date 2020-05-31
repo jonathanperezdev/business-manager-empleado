@@ -1,4 +1,4 @@
-package com.business.manager.empleado.exception.error;
+package com.business.manager.empleado.exceptions.errors;
 
 public enum ErrorEnum {
 	//Empleado

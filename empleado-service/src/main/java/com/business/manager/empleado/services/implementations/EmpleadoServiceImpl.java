@@ -14,9 +14,9 @@ import com.business.manager.empleado.dao.repositories.TipoDocumentoRepository;
 import com.business.manager.empleado.dao.repositories.UbicacionRepository;
 import com.business.manager.empleado.empleado.model.EmpleadoModel;
 import com.business.manager.empleado.enums.CargosEnum;
-import com.business.manager.empleado.exception.NoDataFoundException;
-import com.business.manager.empleado.exception.OperationNotPosibleException;
-import com.business.manager.empleado.exception.error.ErrorEnum;
+import com.business.manager.empleado.exceptions.NoDataFoundException;
+import com.business.manager.empleado.exceptions.OperationNotPossibleException;
+import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 import com.business.manager.empleado.enums.UbicacionesEnum;
 import com.business.manager.empleado.services.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 						empleadoModel.getNumeroDocumento());
 
 		if(Objects.nonNull(empleado)) {
-			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_DUPLICATE_TIPO_AND_NUMBER_DOC,
+			throw new OperationNotPossibleException(ErrorEnum.EMPLEADO_DUPLICATE_TIPO_AND_NUMBER_DOC,
 					tipoDocumentoRepository.findById(empleadoModel.getTipoDocumento()).get().getNombre(),
 					empleadoModel.getNumeroDocumento());
 		}
@@ -147,23 +147,23 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	private void validateAddEmpleadoToUbicacion(Ubicacion ubicacion, Empleado empleado){
 
 		if(empleado.getId().equals(ubicacion.getIngenieroACargo())){
-			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_ALREADY_ASSIGNED,
+			throw new OperationNotPossibleException(ErrorEnum.EMPLEADO_ALREADY_ASSIGNED,
 					"ingeniero a cargo");
 		}
 
 		if(empleado.getId().equals(ubicacion.getOficialACargo())) {
-			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_ALREADY_ASSIGNED,
+			throw new OperationNotPossibleException(ErrorEnum.EMPLEADO_ALREADY_ASSIGNED,
 					"oficial a cargo");
 		}
 
 		if(UbicacionesEnum.OBRA.name().equalsIgnoreCase(ubicacion.getTipo().name())
 				&& !isCargoInOperarioOrOficial(empleado.getCargo())){
-			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_OBRA);
+			throw new OperationNotPossibleException(ErrorEnum.EMPLEADO_OBRA);
 		}
 
 		if(!UbicacionesEnum.OBRA.name().equalsIgnoreCase(ubicacion.getTipo().name()) &&
 				isCargoInOperarioOrOficial(empleado.getCargo())) {
-			throw new OperationNotPosibleException(ErrorEnum.EMPLEADO_OFICINA);
+			throw new OperationNotPossibleException(ErrorEnum.EMPLEADO_OFICINA);
 		}
 
 	}

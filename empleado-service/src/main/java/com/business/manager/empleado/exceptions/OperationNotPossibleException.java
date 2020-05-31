@@ -1,11 +1,11 @@
-package com.business.manager.empleado.exception;
+package com.business.manager.empleado.exceptions;
 
-import com.business.manager.empleado.exception.error.ErrorEnum;
+import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 
-public class OperationNotPosibleException extends BaseException {
+public class OperationNotPossibleException extends BaseException {
 	private static final long serialVersionUID = 1L;
 
-	public OperationNotPosibleException(ErrorEnum error, Object ... args) {
+	public OperationNotPossibleException(ErrorEnum error, Object ... args) {
 		super(error, args);
 	}
 }

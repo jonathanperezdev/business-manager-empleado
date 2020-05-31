@@ -1,4 +1,4 @@
-package com.business.manager.empleado.configuration;
+package com.business.manager.empleado.configurations;
 
 import com.business.manager.empleado.converters.EmpleadoModelConverter;
 import com.business.manager.empleado.converters.UbicacionModelConverter;

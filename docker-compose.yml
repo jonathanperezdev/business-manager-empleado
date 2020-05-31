@@ -23,10 +23,10 @@ services:
     restart: on-failure:10
     expose:
       - 8000
-      - 5080
+      - 5000
     ports:
       - 8000:8000
-      - 5081:5081
+      - 5000:5000
     depends_on:
       - BMDBEMPLEADO
 volumes:

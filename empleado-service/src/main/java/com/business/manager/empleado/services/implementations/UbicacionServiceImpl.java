@@ -8,9 +8,9 @@ import com.business.manager.empleado.dao.entities.Ubicacion;
 import com.business.manager.empleado.dao.repositories.EmpleadoRepository;
 import com.business.manager.empleado.dao.repositories.UbicacionRepository;
 import com.business.manager.empleado.empleado.model.UbicacionModel;
-import com.business.manager.empleado.exception.NoDataFoundException;
-import com.business.manager.empleado.exception.OperationNotPosibleException;
-import com.business.manager.empleado.exception.error.ErrorEnum;
+import com.business.manager.empleado.exceptions.NoDataFoundException;
+import com.business.manager.empleado.exceptions.OperationNotPossibleException;
+import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 import com.business.manager.empleado.services.EmpleadoService;
 import com.business.manager.empleado.services.UbicacionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +56,7 @@ public class UbicacionServiceImpl implements UbicacionService {
 		Ubicacion ubicacion = ubicacionRepository.findByNombreIgnoreCase(ubicacionModel.getNombre());
 
 		if(Objects.nonNull(ubicacion)) {
-			throw new OperationNotPosibleException(ErrorEnum.UBICACION_ALREADY_EXIST, ubicacionModel.getNombre());
+			throw new OperationNotPossibleException(ErrorEnum.UBICACION_ALREADY_EXIST, ubicacionModel.getNombre());
 		}
 
 		ubicacion = ubicacionRepository.save(conversionService.convert(ubicacionModel, Ubicacion.class));
@@ -74,7 +74,7 @@ public class UbicacionServiceImpl implements UbicacionService {
     @Override
     public void deleteUbicacion(Integer id) {
     	if(!CollectionUtils.isEmpty(empleadoRepository.findByUbicacion(id))) {
-			throw new OperationNotPosibleException(ErrorEnum.DELETE_EMPLEADO_NOT_POSIBLE, "La ubicacion");
+			throw new OperationNotPossibleException(ErrorEnum.DELETE_EMPLEADO_NOT_POSIBLE, "La ubicacion");
 		}
     	
     	ubicacionRepository.deleteById(id);

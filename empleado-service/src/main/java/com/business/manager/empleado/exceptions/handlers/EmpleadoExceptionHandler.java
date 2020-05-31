@@ -1,8 +1,8 @@
-package com.business.manager.empleado.exception.handler;
+package com.business.manager.empleado.exceptions.handlers;
 
-import com.business.manager.empleado.exception.NoDataFoundException;
-import com.business.manager.empleado.exception.OperationNotPosibleException;
-import com.business.manager.empleado.exception.error.ErrorResponse;
+import com.business.manager.empleado.exceptions.NoDataFoundException;
+import com.business.manager.empleado.exceptions.OperationNotPossibleException;
+import com.business.manager.empleado.exceptions.errors.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,9 +25,9 @@ public class EmpleadoExceptionHandler {
 	}
 	
 	@ResponseStatus(HttpStatus.CONFLICT)
-	@ExceptionHandler(OperationNotPosibleException.class)
+	@ExceptionHandler(OperationNotPossibleException.class)
 	@ResponseBody
-	public ErrorResponse deleteNotPosibleException(OperationNotPosibleException ex) {
+	public ErrorResponse deleteNotPosibleException(OperationNotPossibleException ex) {
 		LOGGER.info("Handling exception class={}", ex.getClass());
 
 		return ErrorResponse.newErrorResponse(ex);

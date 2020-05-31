@@ -1,4 +1,4 @@
-package com.business.manager.empleado.configuration;
+package com.business.manager.empleado.configurations;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
