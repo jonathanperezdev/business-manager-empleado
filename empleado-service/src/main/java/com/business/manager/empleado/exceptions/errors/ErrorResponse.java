@@ -1,6 +1,6 @@
-package com.business.manager.empleado.exception.error;
+package com.business.manager.empleado.exceptions.errors;
 
-import com.business.manager.empleado.exception.BaseException;
+import com.business.manager.empleado.exceptions.BaseException;
 import lombok.Getter;
 
 @Getter

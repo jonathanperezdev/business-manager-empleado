@@ -1,6 +1,6 @@
-package com.business.manager.empleado.exception;
+package com.business.manager.empleado.exceptions;
 
-import com.business.manager.empleado.exception.error.ErrorEnum;
+import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 
 public class NoDataFoundException extends BaseException {
 	

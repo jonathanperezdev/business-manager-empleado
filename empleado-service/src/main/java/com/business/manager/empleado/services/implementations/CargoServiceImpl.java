@@ -4,9 +4,9 @@ import com.business.manager.empleado.dao.entities.Cargo;
 import com.business.manager.empleado.dao.repositories.CargoRepository;
 import com.business.manager.empleado.dao.repositories.EmpleadoRepository;
 import com.business.manager.empleado.empleado.model.CargoModel;
-import com.business.manager.empleado.exception.NoDataFoundException;
-import com.business.manager.empleado.exception.OperationNotPosibleException;
-import com.business.manager.empleado.exception.error.ErrorEnum;
+import com.business.manager.empleado.exceptions.NoDataFoundException;
+import com.business.manager.empleado.exceptions.OperationNotPossibleException;
+import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 import com.business.manager.empleado.services.CargoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,7 +50,7 @@ public class CargoServiceImpl implements CargoService {
 		Cargo cargo = cargoRepository.findByNombreIgnoreCase(cargoModel.getNombre());
 
 		if(Objects.nonNull(cargo)) {
-			throw new OperationNotPosibleException(ErrorEnum.CARGO_ALREADY_EXIST, cargoModel.getNombre());
+			throw new OperationNotPossibleException(ErrorEnum.CARGO_ALREADY_EXIST, cargoModel.getNombre());
 		}
 
 		cargo = cargoRepository.save(conversionService.convert(cargoModel, Cargo.class));
@@ -68,7 +68,7 @@ public class CargoServiceImpl implements CargoService {
 	@Override
 	public void deleteCargo(Integer id) {
 		if(!CollectionUtils.isEmpty(empleadoRepository.findByCargoOrderByCargo(id))) {
-			throw new OperationNotPosibleException(ErrorEnum.DELETE_EMPLEADO_NOT_POSIBLE, "El cargo");
+			throw new OperationNotPossibleException(ErrorEnum.DELETE_EMPLEADO_NOT_POSIBLE, "El cargo");
 		}
 
 		cargoRepository.deleteById(id);
