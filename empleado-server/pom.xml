@@ -5,19 +5,19 @@
 
 	<parent>
 		<artifactId>empleado</artifactId>
-		<groupId>com.business.manager</groupId>
+		<groupId>com.business.manager.empleado</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	
-	<groupId>com.business.manager</groupId>
+	<groupId>com.business.manager.empleado</groupId>
 	<artifactId>empleado-server</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<name>empleado-server</name>
-	<description>Demo project for Spring Boot</description>
+	<description>SpringCloud project for empleado server</description>
 
 	<dependencies>
         <dependency>
-            <groupId>com.business.manager</groupId>
+            <groupId>com.business.manager.empleado</groupId>
             <artifactId>empleado-service</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/empleado/v1/api")
+@RequestMapping("/${api.empleado.version}/${api.empleado.path}/empleado")
 class EmpleadoController {
 
     private static final Logger LOG = LoggerFactory.getLogger(EmpleadoController.class);
@@ -35,14 +35,14 @@ class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
-    @GetMapping("/empleado/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     EmpleadoModel getEmpleado(@PathVariable Long id) {
         return empleadoService.findEmpleado(id);
     }
     
-    @GetMapping("/empleados/search")
+    @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<EmpleadoModel> getEmpleadoBySearchCriteria(
@@ -53,7 +53,7 @@ class EmpleadoController {
     	return empleadoService.search(tipoDocumento, numeroDocumento, nombres, apellidos);
     }
     
-    @GetMapping("/empleados/searchWithTipoUbicacion")
+    @GetMapping("/searchWithTipoUbicacion")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<EmpleadoModel> getEmpleadoBySearchWithTipoUbicacion(
@@ -70,21 +70,21 @@ class EmpleadoController {
     			apellidos);
     }
     
-    @GetMapping("/empleados/{cargo}")
+    @GetMapping("/{cargo}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<EmpleadoModel> getEmpleadosByCargo(@PathVariable String cargo) {
     	return empleadoService.searchByCargo(cargo);
     }
     
-    @GetMapping("/empleado/ubicacion/{id}")
+    @GetMapping("/ubicacion/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<EmpleadoModel> getEmpleadoBySearchCriteria(@PathVariable Integer id) {
     	return empleadoService.findByUbicacion(id);
     }
     
-    @PostMapping("/empleado")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     EmpleadoModel createEmpleado(@Valid @RequestBody EmpleadoModel empleado) throws URISyntaxException {
@@ -92,14 +92,14 @@ class EmpleadoController {
         return empleadoService.upsertEmpleado(empleado);
     }
     
-    @PutMapping("/empleados/ubicacion")
+    @PutMapping("/ubicacion")
     @ResponseStatus(HttpStatus.OK)
     void updateUbicacion(@Valid @RequestBody UpdateUbicacionRequest request) {
         LOG.info("Actualizando empleados con ubicacion {}", request.getIdUbicacion());
         empleadoService.updateUbicacion(request.getIdEmpleados(), request.getIdUbicacion());
     }    
 
-    @PutMapping("/empleado/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     EmpleadoModel updateEmpleado(@PathVariable Long id, @Valid @RequestBody EmpleadoModel empleado) {
@@ -107,7 +107,7 @@ class EmpleadoController {
         return empleadoService.updateEmpleado(id, empleado);
     }
 
-    @DeleteMapping("/empleado/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmpleado(@PathVariable Long id) {
         LOG.info("Reuqest para eliminar un Empleado: {}", id);
         empleadoService.deleteEmpleado(id);

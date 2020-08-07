@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/empleado/v1/api")
+@RequestMapping("/${api.empleado.version}/${api.empleado.path}/cargo")
 @Slf4j
 public class CargoController {
 
@@ -22,21 +22,21 @@ public class CargoController {
 		this.cargoService = cargoService;
 	}
 
-	@GetMapping("/cargos")
+	@GetMapping("/all")
 	@ResponseStatus(HttpStatus.OK)
     @ResponseBody
 	List<CargoModel> cargos() {
 		return cargoService.findAllCargos();
 	}
 
-	@GetMapping("/cargo/{id}")
+	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	CargoModel getCargo(@PathVariable Integer id) {
 		return cargoService.findCargo(id);
 	}
 
-	@PostMapping("/cargo")
+	@PostMapping
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	CargoModel createCargo(@Valid @RequestBody CargoModel cargo) throws URISyntaxException {
@@ -44,7 +44,7 @@ public class CargoController {
 		return cargoService.upsertCargo(cargo);
 	}
 
-	@PutMapping("/cargo/{id}")
+	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	CargoModel updateCargo(@PathVariable Integer id, @Valid @RequestBody CargoModel cargo) {
@@ -52,7 +52,7 @@ public class CargoController {
 		return cargoService.updateCargo(id,cargo);
 	}
 
-	@DeleteMapping("/cargo/{id}")
+	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	public void deleteCargo(@PathVariable Integer id) {
 		log.info("Request para eliminar un cargo: {}", id);
