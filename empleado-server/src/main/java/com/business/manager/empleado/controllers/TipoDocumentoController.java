@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/empleado/v1/api")
+@RequestMapping("/${api.empleado.version}/${api.empleado.path}/")
 public class TipoDocumentoController {
 
     @Autowired

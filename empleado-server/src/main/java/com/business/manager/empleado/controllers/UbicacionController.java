@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.business.manager.empleado.services.UbicacionService;
 
 @RestController
-@RequestMapping("/empleado/v1/api")
+@RequestMapping("/${api.empleado.version}/${api.empleado.path}/ubicacion")
 class UbicacionController {
 
     private static final Logger LOG = LoggerFactory.getLogger(UbicacionController.class);
@@ -34,21 +34,21 @@ class UbicacionController {
         this.ubicacionService = ubicacionService;
     }
 
-    @GetMapping("/ubicaciones")
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     List<UbicacionModel> ubicaciones() {
         return ubicacionService.findAllUbicaciones();
     }
 
-    @GetMapping("/ubicacion/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     UbicacionModel getUbicacion(@PathVariable Integer id) {
         return ubicacionService.findUbicacion(id);
     }
 
-    @PostMapping("/ubicacion")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     UbicacionModel createUbicacion(@Valid @RequestBody UbicacionModel ubicacion) throws URISyntaxException {
@@ -56,7 +56,7 @@ class UbicacionController {
         return ubicacionService.upsertUbicacion(ubicacion);
     }
 
-    @PutMapping("/ubicacion/{id}")
+    @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     UbicacionModel updateUbicacion(@PathVariable Integer id, @Valid @RequestBody UbicacionModel ubicacion) {
@@ -64,7 +64,7 @@ class UbicacionController {
         return ubicacionService.updateUbicacion(id,ubicacion);
     }
     
-    @PutMapping("/ubicacion/configuracion")
+    @PutMapping("/configuracion")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     void configuraUbicacion(@Valid @RequestBody ConfigUbicacionRequest confUbicReq) {
@@ -74,7 +74,7 @@ class UbicacionController {
         		confUbicReq.getOficialACargo());
     }
 
-    @DeleteMapping("/ubicacion/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUbicacion(@PathVariable Integer id) {
         LOG.info("Request para eliminar un Ubicacion: {}", id);
