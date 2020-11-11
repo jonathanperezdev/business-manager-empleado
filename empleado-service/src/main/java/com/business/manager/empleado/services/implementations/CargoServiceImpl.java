@@ -3,7 +3,7 @@ package com.business.manager.empleado.services.implementations;
 import com.business.manager.empleado.dao.entities.Cargo;
 import com.business.manager.empleado.dao.repositories.CargoRepository;
 import com.business.manager.empleado.dao.repositories.EmpleadoRepository;
-import com.business.manager.empleado.empleado.model.CargoModel;
+import com.business.manager.empleado.empleado.models.CargoModel;
 import com.business.manager.empleado.exceptions.NoDataFoundException;
 import com.business.manager.empleado.exceptions.OperationNotPossibleException;
 import com.business.manager.empleado.exceptions.errors.ErrorEnum;

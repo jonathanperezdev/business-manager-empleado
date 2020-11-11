@@ -2,7 +2,7 @@ package com.business.manager.empleado.services.implementations;
 
 import com.business.manager.empleado.dao.entities.TipoDocumento;
 import com.business.manager.empleado.dao.repositories.TipoDocumentoRepository;
-import com.business.manager.empleado.empleado.model.TipoDocumentoModel;
+import com.business.manager.empleado.empleado.models.TipoDocumentoModel;
 import com.business.manager.empleado.exceptions.NoDataFoundException;
 import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 import com.business.manager.empleado.services.TipoDocumentoService;

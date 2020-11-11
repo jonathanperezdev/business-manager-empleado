@@ -1,6 +1,6 @@
 package com.business.manager.empleado.controllers;
 
-import com.business.manager.empleado.empleado.model.CargoModel;
+import com.business.manager.empleado.empleado.models.CargoModel;
 import com.business.manager.empleado.services.CargoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

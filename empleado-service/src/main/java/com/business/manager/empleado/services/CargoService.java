@@ -1,7 +1,7 @@
 package com.business.manager.empleado.services;
 
 import com.business.manager.empleado.dao.entities.Cargo;
-import com.business.manager.empleado.empleado.model.CargoModel;
+import com.business.manager.empleado.empleado.models.CargoModel;
 
 import java.util.List;
 

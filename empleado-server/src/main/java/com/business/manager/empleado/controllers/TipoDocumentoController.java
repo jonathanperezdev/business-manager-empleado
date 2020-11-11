@@ -1,6 +1,6 @@
 package com.business.manager.empleado.controllers;
 
-import com.business.manager.empleado.empleado.model.TipoDocumentoModel;
+import com.business.manager.empleado.empleado.models.TipoDocumentoModel;
 import com.business.manager.empleado.services.TipoDocumentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

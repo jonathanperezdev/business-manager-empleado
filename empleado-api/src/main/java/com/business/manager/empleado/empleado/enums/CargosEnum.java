@@ -1,4 +1,4 @@
-package com.business.manager.empleado.enums;
+package com.business.manager.empleado.empleado.enums;
 
 public enum CargosEnum {
 	OFICIAL("Oficial"),
@@ -6,7 +6,7 @@ public enum CargosEnum {
 	
 	private String nombre;
 	
-	private CargosEnum(String nombre){
+	CargosEnum(String nombre){
 		this.nombre = nombre;
 	}
 

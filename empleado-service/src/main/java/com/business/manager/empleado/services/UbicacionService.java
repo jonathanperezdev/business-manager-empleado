@@ -2,7 +2,7 @@ package com.business.manager.empleado.services;
 
 import java.util.List;
 
-import com.business.manager.empleado.empleado.model.UbicacionModel;
+import com.business.manager.empleado.empleado.models.UbicacionModel;
 import org.springframework.stereotype.Service;
 
 @Service

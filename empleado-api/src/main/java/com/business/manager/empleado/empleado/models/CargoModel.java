@@ -1,4 +1,4 @@
-package com.business.manager.empleado.empleado.model;
+package com.business.manager.empleado.empleado.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

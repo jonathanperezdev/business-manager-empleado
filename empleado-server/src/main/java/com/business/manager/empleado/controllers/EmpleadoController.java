@@ -5,8 +5,9 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.business.manager.empleado.empleado.model.EmpleadoModel;
-import com.business.manager.empleado.empleado.model.UpdateUbicacionRequest;
+import com.business.manager.empleado.empleado.enums.RiesgoLaboral;
+import com.business.manager.empleado.empleado.models.EmpleadoModel;
+import com.business.manager.empleado.empleado.models.UpdateUbicacionRequest;
 import com.business.manager.empleado.services.EmpleadoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ class EmpleadoController {
     			apellidos);
     }
     
-    @GetMapping("/{cargo}")
+    @GetMapping("/cargo/{cargo}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<EmpleadoModel> getEmpleadosByCargo(@PathVariable String cargo) {
@@ -108,9 +109,15 @@ class EmpleadoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEmpleado(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEmpleado(@PathVariable Long id) {
         LOG.info("Reuqest para eliminar un Empleado: {}", id);
         empleadoService.deleteEmpleado(id);
-        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/riesgosLaborales")
+    @ResponseStatus(HttpStatus.OK)
+    public RiesgoLaboral[] getRiesgosLaborales(){
+        return empleadoService.getRiesgosLaborales();
     }
 }

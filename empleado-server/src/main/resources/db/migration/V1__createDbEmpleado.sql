@@ -26,6 +26,7 @@ CREATE TABLE EMPLEADO (
   contacto_emergencia_telefono varchar(13),
   cargo INT NOT NULL,
   ubicacion INT,
+  riesgo_laboral varchar(30) not null,
   UNIQUE(tipo_documento, numero_documento),
   CONSTRAINT EMPLEADO_cargo_CARGO_id FOREIGN KEY (cargo) REFERENCES cargo(id),
   CONSTRAINT EMPLEADO_tipodoc_TIPO_DOCUMENTO_id FOREIGN KEY (tipo_documento) REFERENCES TIPO_DOCUMENTO(id)

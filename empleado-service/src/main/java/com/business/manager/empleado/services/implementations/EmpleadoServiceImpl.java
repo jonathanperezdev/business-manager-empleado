@@ -1,6 +1,7 @@
 package com.business.manager.empleado.services.implementations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -12,19 +13,27 @@ import com.business.manager.empleado.dao.repositories.CargoRepository;
 import com.business.manager.empleado.dao.repositories.EmpleadoRepository;
 import com.business.manager.empleado.dao.repositories.TipoDocumentoRepository;
 import com.business.manager.empleado.dao.repositories.UbicacionRepository;
-import com.business.manager.empleado.empleado.model.EmpleadoModel;
-import com.business.manager.empleado.enums.CargosEnum;
+import com.business.manager.empleado.empleado.enums.RiesgoLaboral;
+import com.business.manager.empleado.empleado.enums.StreamAction;
+import com.business.manager.empleado.empleado.models.EmpleadoModel;
+import com.business.manager.empleado.empleado.enums.CargosEnum;
 import com.business.manager.empleado.exceptions.NoDataFoundException;
 import com.business.manager.empleado.exceptions.OperationNotPossibleException;
 import com.business.manager.empleado.exceptions.errors.ErrorEnum;
-import com.business.manager.empleado.enums.UbicacionesEnum;
+import com.business.manager.empleado.empleado.enums.UbicacionesEnum;
 import com.business.manager.empleado.services.EmpleadoService;
+import com.business.manager.empleado.streams.EmpleadoOutputStreams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.MimeTypeUtils;
+import com.business.manager.empleado.empleado.models.streams.EmpleadoStreamModel;
 
 @Service
 public class EmpleadoServiceImpl implements EmpleadoService {
@@ -40,6 +49,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 
 	@Autowired
 	private UbicacionRepository ubicacionRepository;
+
+	@Autowired
+	private EmpleadoOutputStreams empleadoOutputStreams;
 
 	@Autowired
 	@Qualifier("customConversionService")
@@ -66,7 +78,9 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 		}
 
 		empleado = empleadoRepository.save(conversionService.convert(empleadoModel, Empleado.class));
-		return conversionService.convert(empleado, EmpleadoModel.class);
+		empleadoModel = conversionService.convert(empleado, EmpleadoModel.class);
+		sendEmpleadoMessage(EmpleadoStreamModel.of(StreamAction.UPSERT, empleadoModel));
+		return empleadoModel;
 	}
 
 	@Override
@@ -74,12 +88,15 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 		empleadoModel.setId(id);
 
 		Empleado empleado = empleadoRepository.save(conversionService.convert(empleadoModel, Empleado.class));
+		sendEmpleadoMessage(EmpleadoStreamModel.of(StreamAction.UPSERT, empleadoModel));
 		return conversionService.convert(empleado, EmpleadoModel.class);
 	}
 
 	@Override
 	public void deleteEmpleado(Long id) {
+		Empleado empleado = empleadoRepository.findById(id).get();
 		empleadoRepository.deleteById(id);
+		sendEmpleadoMessage(EmpleadoStreamModel.of(StreamAction.UPSERT, conversionService.convert(empleado, EmpleadoModel.class)));
 	}
 
 	@Override
@@ -214,6 +231,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     		Empleado empleado = empleadoRepository.findById(item).get();
     		empleado.setUbicacion(idUbicacion);
     		empleadoRepository.save(empleado);
+			sendEmpleadoMessage(EmpleadoStreamModel.of(StreamAction.DELETE, conversionService.convert(empleado, EmpleadoModel.class)));
     	});
     }
 
@@ -222,5 +240,18 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 				.stream()
 				.map(empleado -> conversionService.convert(empleado, EmpleadoModel.class))
 				.collect(Collectors.toList());
+	}
+
+	private void sendEmpleadoMessage(EmpleadoStreamModel empleado){
+		MessageChannel messageChannel = empleadoOutputStreams.outboundEmpleados();
+		messageChannel.send(MessageBuilder
+				.withPayload(empleado)
+				.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+				.build());
+	}
+
+	@Override
+	public RiesgoLaboral[] getRiesgosLaborales(){
+		return RiesgoLaboral.values();
 	}
 }
