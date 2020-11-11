@@ -1,11 +1,11 @@
-package com.business.manager.empleado.enums;
+package com.business.manager.empleado.empleado.enums;
 
 public enum UbicacionesEnum {
 	OBRA("OBRA");
 	
 	private String nombre;
 	
-	private UbicacionesEnum(String nombre){
+	UbicacionesEnum(String nombre){
 		this.nombre = nombre;
 	}
 

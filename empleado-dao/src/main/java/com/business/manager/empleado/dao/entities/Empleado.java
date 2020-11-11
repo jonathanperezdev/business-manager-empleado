@@ -1,11 +1,14 @@
 package com.business.manager.empleado.dao.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.business.manager.empleado.empleado.enums.RiesgoLaboral;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -36,6 +39,10 @@ public class Empleado {
     
     @NonNull
     private BigDecimal salario;
+
+    @NonNull
+    @Enumerated(EnumType.STRING)
+    private RiesgoLaboral riesgoLaboral;
     
     private String direccion;
     private String numeroCelular;

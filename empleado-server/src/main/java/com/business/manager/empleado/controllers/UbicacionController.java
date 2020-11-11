@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.business.manager.empleado.empleado.model.UbicacionModel;
-import com.business.manager.empleado.empleado.model.ConfigUbicacionRequest;
+import com.business.manager.empleado.empleado.models.UbicacionModel;
+import com.business.manager.empleado.empleado.models.ConfigUbicacionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

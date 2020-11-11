@@ -7,17 +7,25 @@ import java.util.stream.Collectors;
 import com.business.manager.empleado.dao.entities.Ubicacion;
 import com.business.manager.empleado.dao.repositories.EmpleadoRepository;
 import com.business.manager.empleado.dao.repositories.UbicacionRepository;
-import com.business.manager.empleado.empleado.model.UbicacionModel;
+import com.business.manager.empleado.empleado.enums.StreamAction;
+import com.business.manager.empleado.empleado.models.UbicacionModel;
+import com.business.manager.empleado.empleado.models.streams.EmpleadoStreamModel;
+import com.business.manager.empleado.empleado.models.streams.UbicacionStreamModel;
 import com.business.manager.empleado.exceptions.NoDataFoundException;
 import com.business.manager.empleado.exceptions.OperationNotPossibleException;
 import com.business.manager.empleado.exceptions.errors.ErrorEnum;
 import com.business.manager.empleado.services.EmpleadoService;
 import com.business.manager.empleado.services.UbicacionService;
+import com.business.manager.empleado.streams.EmpleadoOutputStreams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.MimeTypeUtils;
 
 @Service
 public class UbicacionServiceImpl implements UbicacionService {
@@ -30,6 +38,9 @@ public class UbicacionServiceImpl implements UbicacionService {
 	
 	@Autowired
 	private EmpleadoService empleadoService;
+
+	@Autowired
+	private EmpleadoOutputStreams empleadoOutputStreams;
 
 	@Autowired
 	@Qualifier("customConversionService")
@@ -60,14 +71,16 @@ public class UbicacionServiceImpl implements UbicacionService {
 		}
 
 		ubicacion = ubicacionRepository.save(conversionService.convert(ubicacionModel, Ubicacion.class));
-		return conversionService.convert(ubicacion, UbicacionModel.class);
+		ubicacionModel = conversionService.convert(ubicacion, UbicacionModel.class);
+		sendUbicacionMessage(UbicacionStreamModel.of(StreamAction.UPSERT, ubicacionModel));
+		return ubicacionModel;
 	}
 
 	@Override
 	public UbicacionModel updateUbicacion(Integer id, UbicacionModel ubicacionModel) {
 		ubicacionModel.setId(id);
 		Ubicacion ubicacion = ubicacionRepository.save(conversionService.convert(ubicacionModel, Ubicacion.class));
-
+		sendUbicacionMessage(UbicacionStreamModel.of(StreamAction.UPSERT, ubicacionModel));
 		return conversionService.convert(ubicacion, UbicacionModel.class);
 	}
     
@@ -76,8 +89,10 @@ public class UbicacionServiceImpl implements UbicacionService {
     	if(!CollectionUtils.isEmpty(empleadoRepository.findByUbicacion(id))) {
 			throw new OperationNotPossibleException(ErrorEnum.DELETE_EMPLEADO_NOT_POSIBLE, "La ubicacion");
 		}
-    	
+
+    	UbicacionModel ubicacionModel = conversionService.convert(ubicacionRepository.findById(id).get(), UbicacionModel.class);
     	ubicacionRepository.deleteById(id);
+		sendUbicacionMessage(UbicacionStreamModel.of(StreamAction.DELETE, ubicacionModel));
     }
     
     @Override
@@ -97,5 +112,13 @@ public class UbicacionServiceImpl implements UbicacionService {
 				.stream()
 				.map(ubicacion -> conversionService.convert(ubicacion, UbicacionModel.class))
 				.collect(Collectors.toList());
+	}
+
+	private void sendUbicacionMessage(UbicacionStreamModel ubicacion){
+		MessageChannel messageChannel = empleadoOutputStreams.outboundUbicaciones();
+		messageChannel.send(MessageBuilder
+				.withPayload(ubicacion)
+				.setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
+				.build());
 	}
 }

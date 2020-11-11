@@ -1,4 +1,4 @@
-package com.business.manager.empleado.empleado.model;
+package com.business.manager.empleado.empleado.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +37,7 @@ public class EmpleadoModel {
     private String contactoEmergenciaTelefono;
     private Integer cargo;
     private Integer ubicacion;
+    private String riesgoLaboral;
 
     //Properties not mapped with Entity
     private UbicacionModel ubicacionModel;

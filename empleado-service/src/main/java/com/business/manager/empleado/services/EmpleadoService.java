@@ -2,7 +2,8 @@ package com.business.manager.empleado.services;
 
 import java.util.List;
 
-import com.business.manager.empleado.empleado.model.EmpleadoModel;
+import com.business.manager.empleado.empleado.enums.RiesgoLaboral;
+import com.business.manager.empleado.empleado.models.EmpleadoModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,5 +30,6 @@ public interface EmpleadoService {
 												String numeroDocumento,
 												String nombres,
 												String apellidos);
-	    
+
+	RiesgoLaboral[] getRiesgosLaborales();
 }
